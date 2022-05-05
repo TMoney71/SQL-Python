@@ -9,22 +9,34 @@ choice = None
 while choice != "5":
     print("1) Looking for a Game?")
     print("2) Would you Like to add a Game?")
-    print("3) Edit")
-    print("4) Delete Employee")
+    print("3) Update excitng")
+    print("4) Delete")
     print("5) Delete Most Resent Game")
     choice = input("> ")
     print()
 
     if choice == "1":
-        cursor.execute("select * from Games")
-        print("{:>8}  {:>20}  {:>8}  {:>8}   {:>13}".format("Entry", "Name", "Type", "Cost",   "Do I Have?"))
-        for record in cursor.fetchall():
-           print("{:>8}  {:>20}   {:>8}  {:>8}  {:>8}".format(record[0],  record[1], record[2],   record[3],   record[4]))
-           print(" ")
-          
-
-
-
+        print('How do we want to search today do you want to see all of the games, by a certin name, by cost, ones I own. (all, name, cost, own')
+        search = input("")
+        if search == 'all':
+            cursor.execute("select * from Games")
+            print("{:>8}  {:>20}  {:>8}  {:>8}   {:>13}".format("Entry", "Name", "Type", "Cost",   "Do I Have?"))
+            for record in cursor.fetchall():
+               print("{:>8}  {:>20}   {:>8}  {:>8}  {:>8}".format(record[0],  record[1], record[2],   record[3],   record[4]))
+               print(" ")
+        elif search == 'name':
+            name = input('What game are you thinking of: ')
+            name = (name, )
+            cursor.execute("select Name, Cost, Mine, count(*) from Games where Name like ? ", name)
+            print("{:>8} {:>8} {:>8} {:>8}".format("Name", "Cost", "Do I Have", "Recomeded"))
+            for record in cursor.fetchall():
+                print("{:>8}  {:>8}   {:>8} {:>8} ".format(record[0],  record[1], record[2], record[3]))
+        elif search == "own":
+            cursor.execute("Select Name, Type, Mine from Games where Mine like 'Yes' group by Name")
+            print("{:>8} {:>8} {:>8}".format("Name", "Type", "I own it"))
+            for record in cursor.fetchall():
+                print("{:>8} {:>8} {:>8}".format(record[0], record[1], record[2]))
+        
 
     elif choice == "2":
         # This is going to add a game to the folder
@@ -42,8 +54,14 @@ while choice != "5":
 
         cursor.execute("INSERT INTO Games values(?, ?, ?, ?, ?)", values)
         connection.commit()
-
     elif choice == "3":
+        id = input("What is the Id of the Game that we got? ")
+        id = (id,)
+        cursor.execute("Update Games Set Mine = 'Yes' Where entry_id = ?", id)
+        connection.commit()
+
+    elif choice == "4":
         entry = input('entry: ')
         values = [entry, ]
         cursor.execute("Delete from Games where entry_id = ?", values)
+        connection.commit()
