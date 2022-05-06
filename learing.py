@@ -3,7 +3,7 @@ import sqlite3 as sql
 connection = sql.connect('database3.db')
 cursor = connection.cursor()
 
-cursor.execute("CREATE TABLE IF NOT EXISTS Games (entry_id INTERGER primary key not null, Name TEXT, Type Text, Cost INTERGER, Mine TEXT)")
+cursor.execute("CREATE TABLE IF NOT EXISTS Games (entry_id INTEGER primary key autoincrement, Name TEXT, Type Text, Cost INTEGER, Mine TEXT)")
 
 choice = None
 while choice != "5":
@@ -36,7 +36,13 @@ while choice != "5":
             print("{:>8} {:>8} {:>8}".format("Name", "Type", "I own it"))
             for record in cursor.fetchall():
                 print("{:>8} {:>8} {:>8}".format(record[0], record[1], record[2]))
-        
+        elif search == "cost":
+            cost = input("How much are do we have to spend on a Game: $")
+            cost = (cost,)
+            cursor.execute("select Name, Type, Mine, Cost from Games where Cost > ? group by Name", cost)
+            print("{:>8} {:>8} {:>8} {:>8}".format("Name", "Type", "Already Owned", "Cost"))
+            for record in cursor.fetchall():
+                print("{:>8} {:>8} {:>8}".format(record[0], record[1], record[2], record[3]))
 
     elif choice == "2":
         # This is going to add a game to the folder
@@ -54,12 +60,15 @@ while choice != "5":
 
         cursor.execute("INSERT INTO Games values(?, ?, ?, ?, ?)", values)
         connection.commit()
+
+# Going to edit the game
     elif choice == "3":
         id = input("What is the Id of the Game that we got? ")
         id = (id,)
         cursor.execute("Update Games Set Mine = 'Yes' Where entry_id = ?", id)
         connection.commit()
 
+# Here we are going to delete the game by it Entry ID
     elif choice == "4":
         entry = input('entry: ')
         values = [entry, ]
