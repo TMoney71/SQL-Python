@@ -2,7 +2,7 @@
 
 With this project I took on the challenge to learn how SQL and Python can work together in on system. There were a lot of things that I was able to learn for example the ability to created the table and have code take in the variables so that I didnt have to type it out for every input that I came across. 
 
-[Software Demo Video](http://youtube.link.goes.here)
+[SQL and Python](https://youtu.be/0KiVes0lBAY)
 
 # Relational Database
 
